@@ -1,0 +1,102 @@
+# ----------------------------------------
+# .NET / Visual Studio
+# ----------------------------------------
+bin/
+obj/
+out/
+*.user
+*.suo
+*.userosscache
+*.sln.docstates
+*.userprefs
+*.dbmdl
+*.dbproj.schemaview
+*.jfm
+*.pfx
+*.publishsettings
+*.psess
+*.vsp
+*.vspx
+*.sap
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+[Ww][Ii][Nn]32/
+[Aa][Rr][Mm]/
+[Aa][Rr][Mm]64/
+bld/
+[Bb]in/
+[Oo]bj/
+[Ll]og/
+[Ll]ogs/
+
+# Visual Studio cache/options
+.vs/
+*.VC.db
+*.VC.VC.opendb
+
+# JetBrains Rider
+.idea/
+*.sln.iml
+
+# Visual Studio Code
+.vscode/
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# NuGet
+*.nupkg
+*.snupkg
+**/[Pp]ackages/*
+!**/[Pp]ackages/build/
+*.nuget.props
+*.nuget.targets
+
+# ----------------------------------------
+# Testes / Coverage
+# ----------------------------------------
+TestResults/
+[Cc]overage/
+*.coverage
+*.coveragexml
+
+# ----------------------------------------
+# Variaveis de ambiente / segredos
+# ----------------------------------------
+.env
+.env.local
+*.env
+!.env.example
+appsettings.Development.json
+appsettings.Local.json
+secrets.json
+
+# ----------------------------------------
+# Sistema operacional
+# ----------------------------------------
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# ----------------------------------------
+# Logs
+# ----------------------------------------
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# ----------------------------------------
+# Docker
+# ----------------------------------------
+**/docker-data/
+mongo-data/
