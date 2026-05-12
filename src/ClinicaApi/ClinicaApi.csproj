@@ -6,17 +6,15 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <RootNamespace>ClinicaApi</RootNamespace>
     <AssemblyName>ClinicaApi</AssemblyName>
-    <!-- Habilita o XML doc pra o Swagger conseguir mostrar os comentarios <summary> -->
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <!-- Tira o warning chato de propriedade sem comentario, ja que nem tudo precisa -->
     <NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>
 
   <ItemGroup>
-    <!-- driver oficial do mongo pra .NET -->
-    <PackageReference Include="MongoDB.Driver" Version="3.1.0" />
-    <!-- Swagger / OpenAPI UI -->
+    <PackageReference Include="MongoDB.Driver" Version="3.4.0" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="7.2.0" />
+    <PackageReference Include="Snappier" Version="1.2.1" />
+    <PackageReference Include="SharpCompress" Version="0.39.0" />
   </ItemGroup>
 
 </Project>

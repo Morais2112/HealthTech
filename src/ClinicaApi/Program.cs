@@ -1,5 +1,7 @@
 using ClinicaApi.Configuration;
 using ClinicaApi.Data;
+using ClinicaApi.Repositories;
+using ClinicaApi.Services;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -37,6 +39,9 @@ builder.Services.Configure<MongoSettings>(opts =>
 
 // MongoDbContext como singleton: a lib do mongo ja eh thread-safe e reaproveita conexao
 builder.Services.AddSingleton<MongoDbContext>();
+
+builder.Services.AddScoped<IPacienteRepository, PacienteRepository>();
+builder.Services.AddScoped<IPacienteService, PacienteService>();
 
 // -----------------------------------------------------------------------------
 // CORS - precisa liberar pro frontend html+js conseguir bater na API
