@@ -79,7 +79,7 @@ Veja `.env.example` para a lista completa. As principais são:
 ## Status do projeto
 
 - [x] Etapa 1 - Setup inicial (gitignore, docker-compose, README inicial)
-- [ ] Etapa 2 - Estrutura base da Web API
+- [x] Etapa 2 - Estrutura base da Web API
 - [ ] Etapa 3 - CRUD de Pacientes
 - [ ] Etapa 4 - CRUD de Médicos
 - [ ] Etapa 5 - CRUD de Consultas
