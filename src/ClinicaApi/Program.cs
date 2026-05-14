@@ -43,6 +43,9 @@ builder.Services.AddSingleton<MongoDbContext>();
 builder.Services.AddScoped<IPacienteRepository, PacienteRepository>();
 builder.Services.AddScoped<IPacienteService, PacienteService>();
 
+builder.Services.AddScoped<IMedicoRepository, MedicoRepository>();
+builder.Services.AddScoped<IMedicoService, MedicoService>();
+
 // -----------------------------------------------------------------------------
 // CORS - precisa liberar pro frontend html+js conseguir bater na API
 // -----------------------------------------------------------------------------
