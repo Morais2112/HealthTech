@@ -1,0 +1,231 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: "Segoe UI", Roboto, Arial, sans-serif;
+  background: #f4f6f9;
+  color: #222;
+  min-height: 100vh;
+}
+
+.topbar {
+  background: #0f5fa5;
+  color: #fff;
+  padding: 18px 32px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
+}
+
+.topbar h1 {
+  font-size: 1.4rem;
+  letter-spacing: 0.5px;
+}
+
+.topbar nav {
+  display: flex;
+  gap: 20px;
+}
+
+.nav-link {
+  color: #d8e6f3;
+  text-decoration: none;
+  font-weight: 500;
+  padding: 6px 10px;
+  border-radius: 4px;
+  transition: background 0.15s ease;
+}
+
+.nav-link:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+
+.nav-link.active {
+  background: rgba(255, 255, 255, 0.18);
+  color: #fff;
+}
+
+main {
+  max-width: 1100px;
+  margin: 30px auto;
+  padding: 0 24px;
+}
+
+.view-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.view-header h2 {
+  font-size: 1.5rem;
+}
+
+.btn {
+  display: inline-block;
+  padding: 9px 18px;
+  border: none;
+  border-radius: 5px;
+  font-size: 0.95rem;
+  cursor: pointer;
+  text-decoration: none;
+  font-weight: 500;
+  transition: opacity 0.15s ease;
+}
+
+.btn:hover {
+  opacity: 0.88;
+}
+
+.btn-primary {
+  background: #0f5fa5;
+  color: #fff;
+}
+
+.btn-secondary {
+  background: #6c757d;
+  color: #fff;
+}
+
+.btn-danger {
+  background: #c0392b;
+  color: #fff;
+}
+
+.btn-small {
+  padding: 5px 10px;
+  font-size: 0.85rem;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 6px;
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+th, td {
+  padding: 12px 14px;
+  text-align: left;
+  border-bottom: 1px solid #eee;
+}
+
+th {
+  background: #f0f3f7;
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #555;
+}
+
+tbody tr:hover {
+  background: #fafbfd;
+}
+
+.actions {
+  display: flex;
+  gap: 6px;
+}
+
+form {
+  background: #fff;
+  padding: 24px;
+  border-radius: 6px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+  display: grid;
+  gap: 16px;
+  max-width: 640px;
+}
+
+.form-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #444;
+}
+
+input, select, textarea {
+  padding: 9px 12px;
+  border: 1px solid #ccd1d9;
+  border-radius: 5px;
+  font-size: 0.95rem;
+  font-family: inherit;
+}
+
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: #0f5fa5;
+  box-shadow: 0 0 0 2px rgba(15, 95, 165, 0.15);
+}
+
+textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.form-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.empty {
+  text-align: center;
+  padding: 40px;
+  color: #888;
+  font-style: italic;
+}
+
+.loading {
+  text-align: center;
+  padding: 30px;
+  color: #777;
+}
+
+.badge {
+  display: inline-block;
+  padding: 3px 9px;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.badge-agendada { background: #d3e7f7; color: #0f5fa5; }
+.badge-concluida { background: #d4edda; color: #155724; }
+.badge-cancelada { background: #f8d7da; color: #721c24; }
+
+.toast {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 14px 22px;
+  background: #2c3e50;
+  color: #fff;
+  border-radius: 5px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.toast.success { background: #27ae60; }
+.toast.error { background: #c0392b; }
+
+.toast.hidden {
+  opacity: 0;
+  transform: translateY(-10px);
+  pointer-events: none;
+}

@@ -2,6 +2,7 @@ using ClinicaApi.Configuration;
 using ClinicaApi.Data;
 using ClinicaApi.Repositories;
 using ClinicaApi.Services;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -58,9 +59,9 @@ builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo
     {
-        Title = "Clinica API",
+        Title = "Health Tech API",
         Version = "v1",
-        Description = "API REST para gerenciamento de uma clinica medica (Pacientes, Medicos e Consultas).",
+        Description = "API REST da clinica medica Health Tech (Pacientes, Medicos e Consultas).",
         Contact = new OpenApiContact
         {
             Name = "Mateus Morais Lopes",
@@ -81,13 +82,21 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Clinica API v1");
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "Health Tech API v1");
     c.RoutePrefix = "swagger";
 });
 
 app.UseCors(CorsPolicyName);
 
-app.MapGet("/", () => Results.Ok(new { status = "ok", api = "Clinica API", versao = "v1" }));
+var frontendPath = Path.GetFullPath(Path.Combine(builder.Environment.ContentRootPath, "..", "..", "frontend"));
+if (Directory.Exists(frontendPath))
+{
+    var fileProvider = new PhysicalFileProvider(frontendPath);
+    app.UseDefaultFiles(new DefaultFilesOptions { FileProvider = fileProvider });
+    app.UseStaticFiles(new StaticFileOptions { FileProvider = fileProvider });
+}
+
+app.MapGet("/api/health", () => Results.Ok(new { status = "ok", api = "Health Tech API", versao = "v1" }));
 
 app.MapControllers();
 

@@ -1,8 +1,8 @@
-# Clínica Médica - API REST + Frontend
+# Health Tech - API REST + Frontend
 
 Trabalho Prático Semestral da disciplina **Arquitetura de Aplicações Web (2026.1)**.
 
-Aplicação web completa para gerenciamento de uma clínica médica, com API REST em **.NET 10**, persistência em **MongoDB** e frontend em **HTML + JavaScript** com navegação assíncrona.
+Aplicação web completa para gerenciamento da clínica médica **Health Tech**, com API REST em **.NET 10**, persistência em **MongoDB** e frontend em **HTML + JavaScript** com navegação assíncrona.
 
 ## Domínio
 
@@ -83,7 +83,7 @@ Veja `.env.example` para a lista completa. As principais são:
 - [x] Etapa 3 - CRUD de Pacientes
 - [x] Etapa 4 - CRUD de Médicos
 - [x] Etapa 5 - CRUD de Consultas
-- [ ] Etapa 6 - Frontend HTML + JS
+- [x] Etapa 6 - Frontend HTML + JS
 - [ ] Bônus A - JWT
 - [ ] Bônus B - RBAC
 - [ ] Bônus C - Testes unitários
