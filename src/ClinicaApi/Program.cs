@@ -6,12 +6,6 @@ using Microsoft.OpenApi.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// -----------------------------------------------------------------------------
-// Config do Mongo
-// -----------------------------------------------------------------------------
-// Le da secao "MongoSettings" do appsettings, mas se existir variavel de ambiente
-// MONGO_CONNECTION_STRING / MONGO_DATABASE_NAME, ela tem prioridade.
-// (o professor pediu pra nao deixar a string hardcoded)
 var mongoSettings = new MongoSettings
 {
     ConnectionString = Environment.GetEnvironmentVariable("MONGO_CONNECTION_STRING")
@@ -25,19 +19,16 @@ var mongoSettings = new MongoSettings
 if (string.IsNullOrWhiteSpace(mongoSettings.ConnectionString) ||
     string.IsNullOrWhiteSpace(mongoSettings.DatabaseName))
 {
-    // se nao tem nem env var nem appsettings.Development.json eh melhor falhar logo
     throw new InvalidOperationException(
         "MongoSettings nao configurado. Defina as variaveis MONGO_CONNECTION_STRING e MONGO_DATABASE_NAME ou preencha o appsettings.");
 }
 
-// registra o options pattern pra quem precisar injetar IOptions<MongoSettings>
 builder.Services.Configure<MongoSettings>(opts =>
 {
     opts.ConnectionString = mongoSettings.ConnectionString;
     opts.DatabaseName = mongoSettings.DatabaseName;
 });
 
-// MongoDbContext como singleton: a lib do mongo ja eh thread-safe e reaproveita conexao
 builder.Services.AddSingleton<MongoDbContext>();
 
 builder.Services.AddScoped<IPacienteRepository, PacienteRepository>();
@@ -46,10 +37,9 @@ builder.Services.AddScoped<IPacienteService, PacienteService>();
 builder.Services.AddScoped<IMedicoRepository, MedicoRepository>();
 builder.Services.AddScoped<IMedicoService, MedicoService>();
 
-// -----------------------------------------------------------------------------
-// CORS - precisa liberar pro frontend html+js conseguir bater na API
-// -----------------------------------------------------------------------------
-// (em prod a gente restringiria pra dominio especifico, mas em dev libera geral)
+builder.Services.AddScoped<IConsultaRepository, ConsultaRepository>();
+builder.Services.AddScoped<IConsultaService, ConsultaService>();
+
 const string CorsPolicyName = "AllowFrontend";
 builder.Services.AddCors(options =>
 {
@@ -61,9 +51,6 @@ builder.Services.AddCors(options =>
     });
 });
 
-// -----------------------------------------------------------------------------
-// Controllers + Swagger
-// -----------------------------------------------------------------------------
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
@@ -81,7 +68,6 @@ builder.Services.AddSwaggerGen(c =>
         }
     });
 
-    // inclui os comentarios XML que o build gera, ai o swagger mostra as descricoes
     var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
     var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     if (File.Exists(xmlPath))
@@ -92,11 +78,6 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
-// -----------------------------------------------------------------------------
-// Pipeline HTTP
-// -----------------------------------------------------------------------------
-// Swagger so em dev por padrao, mas pro trabalho vou deixar sempre ligado
-// (vai facilitar a apresentacao do professor)
 app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
@@ -106,7 +87,6 @@ app.UseSwaggerUI(c =>
 
 app.UseCors(CorsPolicyName);
 
-// endpoint bobinho de healthcheck so pra confirmar que ta no ar
 app.MapGet("/", () => Results.Ok(new { status = "ok", api = "Clinica API", versao = "v1" }));
 
 app.MapControllers();

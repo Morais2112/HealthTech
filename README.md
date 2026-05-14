@@ -82,7 +82,7 @@ Veja `.env.example` para a lista completa. As principais são:
 - [x] Etapa 2 - Estrutura base da Web API
 - [x] Etapa 3 - CRUD de Pacientes
 - [x] Etapa 4 - CRUD de Médicos
-- [ ] Etapa 5 - CRUD de Consultas
+- [x] Etapa 5 - CRUD de Consultas
 - [ ] Etapa 6 - Frontend HTML + JS
 - [ ] Bônus A - JWT
 - [ ] Bônus B - RBAC
