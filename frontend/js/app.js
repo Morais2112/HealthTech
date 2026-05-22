@@ -28,14 +28,45 @@ function marcarLinkAtivo(rota) {
   });
 }
 
+function atualizarNav() {
+  const navArea = document.getElementById("nav-area");
+  const userArea = document.getElementById("user-area");
+  const logado = auth.logado();
+  const usuario = auth.usuario();
+
+  if (logado) {
+    navArea.style.display = "flex";
+    userArea.innerHTML = `
+      <span class="user-info">${escapeHtml(usuario?.nome ?? "")}</span>
+      <button id="btn-logout" class="btn btn-secondary btn-small">Sair</button>
+    `;
+    document.getElementById("btn-logout").addEventListener("click", () => {
+      auth.limpar();
+      toast("Voce saiu da conta.", "success");
+      window.location.hash = "#/login";
+    });
+  } else {
+    navArea.style.display = "none";
+    userArea.innerHTML = "";
+  }
+}
+
 function rotear() {
   const hash = window.location.hash.replace(/^#\/?/, "") || "pacientes";
   const partes = hash.split("/");
-
   const entidade = partes[0];
   const acao = partes[1];
-  const id = partes[2] === "editar" ? null : partes[2];
   const editar = partes[1] && (partes[2] === "editar");
+
+  atualizarNav();
+
+  if (entidade === "login") return authView.login();
+  if (entidade === "registrar") return authView.registrar();
+
+  if (!auth.logado()) {
+    window.location.hash = "#/login";
+    return;
+  }
 
   marcarLinkAtivo(entidade);
 
@@ -57,11 +88,14 @@ function rotear() {
     if (editar) return consultasView.form(partes[1]);
   }
 
-  document.getElementById("app").innerHTML = `<div class="empty">Página não encontrada.</div>`;
+  document.getElementById("app").innerHTML = `<div class="empty">Pagina nao encontrada.</div>`;
 }
 
 window.addEventListener("hashchange", rotear);
 window.addEventListener("DOMContentLoaded", () => {
-  if (!window.location.hash) window.location.hash = "#/pacientes";
-  else rotear();
+  if (!window.location.hash) {
+    window.location.hash = auth.logado() ? "#/pacientes" : "#/login";
+  } else {
+    rotear();
+  }
 });

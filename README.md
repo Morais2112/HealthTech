@@ -84,7 +84,7 @@ Veja `.env.example` para a lista completa. As principais são:
 - [x] Etapa 4 - CRUD de Médicos
 - [x] Etapa 5 - CRUD de Consultas
 - [x] Etapa 6 - Frontend HTML + JS
-- [ ] Bônus A - JWT
+- [x] Bônus A - JWT
 - [ ] Bônus B - RBAC
 - [ ] Bônus C - Testes unitários
 - [ ] Bônus D - SOLID

@@ -229,3 +229,36 @@ textarea {
   transform: translateY(-10px);
   pointer-events: none;
 }
+
+.user-area {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.user-info {
+  color: #d8e6f3;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.auth-card {
+  max-width: 420px;
+  margin: 60px auto 0 auto;
+  background: #fff;
+  padding: 32px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.auth-card h2 {
+  margin-bottom: 20px;
+  font-size: 1.3rem;
+  text-align: center;
+}
+
+.auth-card form {
+  background: transparent;
+  padding: 0;
+  box-shadow: none;
+}

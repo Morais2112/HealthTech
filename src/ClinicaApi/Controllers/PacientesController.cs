@@ -1,10 +1,12 @@
 using ClinicaApi.DTOs;
 using ClinicaApi.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ClinicaApi.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("pacientes")]
 [Produces("application/json")]
 public class PacientesController : ControllerBase

@@ -4,8 +4,37 @@ const API_BASE = (() => {
   return "http://localhost:5000";
 })();
 
+const TOKEN_KEY = "healthtech_token";
+const USUARIO_KEY = "healthtech_usuario";
+
+const auth = {
+  salvar(token, usuario) {
+    localStorage.setItem(TOKEN_KEY, token);
+    localStorage.setItem(USUARIO_KEY, JSON.stringify(usuario));
+  },
+  limpar() {
+    localStorage.removeItem(TOKEN_KEY);
+    localStorage.removeItem(USUARIO_KEY);
+  },
+  token() {
+    return localStorage.getItem(TOKEN_KEY);
+  },
+  usuario() {
+    const raw = localStorage.getItem(USUARIO_KEY);
+    return raw ? JSON.parse(raw) : null;
+  },
+  logado() {
+    return !!auth.token();
+  }
+};
+
 async function request(path, options = {}) {
   const config = { method: options.method || "GET", headers: { ...(options.headers || {}) } };
+
+  const token = auth.token();
+  if (token) {
+    config.headers["Authorization"] = `Bearer ${token}`;
+  }
 
   if (options.body !== undefined) {
     config.headers["Content-Type"] = "application/json";
@@ -13,6 +42,12 @@ async function request(path, options = {}) {
   }
 
   const res = await fetch(API_BASE + path, config);
+
+  if (res.status === 401) {
+    auth.limpar();
+    window.location.hash = "#/login";
+    throw new Error("Sessao expirada. Faca login novamente.");
+  }
 
   if (res.status === 204) return null;
 
@@ -31,6 +66,10 @@ async function request(path, options = {}) {
 }
 
 const api = {
+  auth: {
+    registrar: (body) => request("/auth/registrar", { method: "POST", body }),
+    login: (body) => request("/auth/login", { method: "POST", body })
+  },
   pacientes: {
     listar: () => request("/pacientes"),
     obter: (id) => request(`/pacientes/${id}`),
