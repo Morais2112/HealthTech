@@ -76,6 +76,22 @@ Veja `.env.example` para a lista completa. As principais são:
 | `MONGO_DATABASE_NAME`     | Nome do banco no Mongo                     |
 | `JWT_SECRET`              | Chave para assinar tokens JWT (Bônus A)    |
 
+## Testes unitários (Bônus C)
+
+O projeto `tests/ClinicaApi.Tests` usa **xUnit** + **Moq** para testar a camada de Services em isolamento, com os repositórios mockados.
+
+```bash
+dotnet test
+```
+
+Cobertura:
+
+| Service          | Cenários cobertos                                                                                                                |
+|------------------|----------------------------------------------------------------------------------------------------------------------------------|
+| `PacienteService`| Criar com CPF novo, listar, criar com CPF duplicado (erro), atualizar id inexistente                                            |
+| `ConsultaService`| Agendar consulta válida, obter por id (com dados denormalizados), data no passado (erro), paciente inexistente (erro), conflito de horário (erro), ObjectId inválido (erro) |
+| `AuthService`    | Primeiro usuário vira Admin, segundo vira Usuario, login válido, email duplicado (erro), senha incorreta (erro), promoção de usuário, promoção de id inexistente |
+
 ## RBAC (Bônus B)
 
 Há dois perfis no sistema:
@@ -99,7 +115,7 @@ Há dois perfis no sistema:
 - [x] Etapa 6 - Frontend HTML + JS
 - [x] Bônus A - JWT
 - [x] Bônus B - RBAC (perfis Admin/Usuario, DELETE restrito, primeiro usuário vira Admin)
-- [ ] Bônus C - Testes unitários
+- [x] Bônus C - Testes unitários (xUnit + Moq, cobrindo Paciente / Consulta / Auth Services)
 - [ ] Bônus D - SOLID
 
 ## Autor
