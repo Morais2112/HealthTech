@@ -31,13 +31,20 @@ function marcarLinkAtivo(rota) {
 function atualizarNav() {
   const navArea = document.getElementById("nav-area");
   const userArea = document.getElementById("user-area");
+  const navUsuarios = document.getElementById("nav-usuarios");
   const logado = auth.logado();
   const usuario = auth.usuario();
 
   if (logado) {
     navArea.style.display = "flex";
+    if (navUsuarios) {
+      navUsuarios.style.display = auth.ehAdmin() ? "inline-block" : "none";
+    }
+    const badgePerfil = usuario?.perfil
+      ? `<span class="badge ${usuario.perfil === "Admin" ? "badge-concluida" : "badge-agendada"}">${escapeHtml(usuario.perfil)}</span>`
+      : "";
     userArea.innerHTML = `
-      <span class="user-info">${escapeHtml(usuario?.nome ?? "")}</span>
+      <span class="user-info">${escapeHtml(usuario?.nome ?? "")} ${badgePerfil}</span>
       <button id="btn-logout" class="btn btn-secondary btn-small">Sair</button>
     `;
     document.getElementById("btn-logout").addEventListener("click", () => {
@@ -86,6 +93,14 @@ function rotear() {
     if (!acao) return consultasView.lista();
     if (acao === "nova") return consultasView.form(null);
     if (editar) return consultasView.form(partes[1]);
+  }
+
+  if (entidade === "usuarios") {
+    if (!auth.ehAdmin()) {
+      document.getElementById("app").innerHTML = `<div class="empty">Acesso restrito ao perfil Admin.</div>`;
+      return;
+    }
+    return usuariosView.lista();
   }
 
   document.getElementById("app").innerHTML = `<div class="empty">Pagina nao encontrada.</div>`;

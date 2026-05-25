@@ -1,4 +1,5 @@
 using ClinicaApi.DTOs;
+using ClinicaApi.Models;
 using ClinicaApi.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -80,9 +81,11 @@ public class ConsultasController : ControllerBase
         }
     }
 
-    /// <summary>Remove uma consulta do sistema.</summary>
+    /// <summary>Remove uma consulta do sistema. Restrito ao perfil Admin.</summary>
     [HttpDelete("{id}")]
+    [Authorize(Roles = PerfilUsuario.Admin)]
     [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Remover(string id)
     {

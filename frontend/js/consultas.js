@@ -44,7 +44,7 @@ const consultasView = {
                     <td><span class="badge ${STATUS_CLASS[statusKey]}">${STATUS_LABEL[statusKey]}</span></td>
                     <td class="actions">
                       <a href="#/consultas/${c.id}/editar" class="btn btn-secondary btn-small">Editar</a>
-                      <button class="btn btn-danger btn-small" data-remove="${c.id}">Excluir</button>
+                      ${auth.ehAdmin() ? `<button class="btn btn-danger btn-small" data-remove="${c.id}">Excluir</button>` : ""}
                     </td>
                   </tr>
                 `;

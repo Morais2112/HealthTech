@@ -76,6 +76,19 @@ Veja `.env.example` para a lista completa. As principais são:
 | `MONGO_DATABASE_NAME`     | Nome do banco no Mongo                     |
 | `JWT_SECRET`              | Chave para assinar tokens JWT (Bônus A)    |
 
+## RBAC (Bônus B)
+
+Há dois perfis no sistema:
+
+| Perfil    | Permissões                                                          |
+|-----------|----------------------------------------------------------------------|
+| `Usuario` | Listar / criar / editar Pacientes, Médicos e Consultas              |
+| `Admin`   | Tudo do Usuario + **DELETE** + gerenciamento de usuários (`/auth/usuarios`) |
+
+**Bootstrap:** o **primeiro usuário registrado no sistema vira Admin automaticamente**. A partir dele, qualquer outro Admin pode promover/rebaixar usuários em `Usuários` no menu.
+
+> Se você já registrou um usuário antes desta etapa e ele está como `Usuario`, você pode promovê-lo manualmente no MongoDB (Mongo Express → `usuarios` → editar campo `Perfil` para `"Admin"`).
+
 ## Status do projeto
 
 - [x] Etapa 1 - Setup inicial (gitignore, docker-compose, README inicial)
@@ -85,7 +98,7 @@ Veja `.env.example` para a lista completa. As principais são:
 - [x] Etapa 5 - CRUD de Consultas
 - [x] Etapa 6 - Frontend HTML + JS
 - [x] Bônus A - JWT
-- [ ] Bônus B - RBAC
+- [x] Bônus B - RBAC (perfis Admin/Usuario, DELETE restrito, primeiro usuário vira Admin)
 - [ ] Bônus C - Testes unitários
 - [ ] Bônus D - SOLID
 

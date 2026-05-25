@@ -26,10 +26,29 @@ public class UsuarioRepository : IUsuarioRepository
         return await _collection.Find(u => u.Id == id).FirstOrDefaultAsync();
     }
 
+    public async Task<IEnumerable<Usuario>> ListarAsync()
+    {
+        return await _collection.Find(FilterDefinition<Usuario>.Empty)
+            .SortBy(u => u.CriadoEm)
+            .ToListAsync();
+    }
+
+    public async Task<long> ContarAsync()
+    {
+        return await _collection.CountDocumentsAsync(FilterDefinition<Usuario>.Empty);
+    }
+
     public async Task CriarAsync(Usuario usuario)
     {
         usuario.Email = usuario.Email.Trim().ToLowerInvariant();
         await _collection.InsertOneAsync(usuario);
+    }
+
+    public async Task<bool> AtualizarPerfilAsync(string id, string perfil)
+    {
+        var update = Builders<Usuario>.Update.Set(u => u.Perfil, perfil);
+        var resultado = await _collection.UpdateOneAsync(u => u.Id == id, update);
+        return resultado.MatchedCount > 0;
     }
 
     private void CriarIndiceEmail()

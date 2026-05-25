@@ -25,6 +25,10 @@ const auth = {
   },
   logado() {
     return !!auth.token();
+  },
+  ehAdmin() {
+    const u = auth.usuario();
+    return !!u && u.perfil === "Admin";
   }
 };
 
@@ -68,7 +72,10 @@ async function request(path, options = {}) {
 const api = {
   auth: {
     registrar: (body) => request("/auth/registrar", { method: "POST", body }),
-    login: (body) => request("/auth/login", { method: "POST", body })
+    login: (body) => request("/auth/login", { method: "POST", body }),
+    listarUsuarios: () => request("/auth/usuarios"),
+    promover: (id) => request(`/auth/usuarios/${id}/promover`, { method: "POST" }),
+    rebaixar: (id) => request(`/auth/usuarios/${id}/rebaixar`, { method: "POST" })
   },
   pacientes: {
     listar: () => request("/pacientes"),

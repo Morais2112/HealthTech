@@ -23,12 +23,15 @@ public class AuthService : IAuthService
             throw new InvalidOperationException("Ja existe um usuario com esse email.");
         }
 
+        var total = await _repository.ContarAsync();
+        var perfil = total == 0 ? PerfilUsuario.Admin : PerfilUsuario.Usuario;
+
         var usuario = new Usuario
         {
             Nome = dto.Nome.Trim(),
             Email = dto.Email.Trim().ToLowerInvariant(),
             SenhaHash = BCrypt.Net.BCrypt.HashPassword(dto.Senha),
-            Perfil = PerfilUsuario.Usuario,
+            Perfil = perfil,
             CriadoEm = DateTime.UtcNow
         };
 
@@ -41,6 +44,46 @@ public class AuthService : IAuthService
             Email = usuario.Email,
             Perfil = usuario.Perfil
         };
+    }
+
+    public async Task<IEnumerable<UsuarioResponseDto>> ListarUsuariosAsync()
+    {
+        var usuarios = await _repository.ListarAsync();
+        return usuarios.Select(u => new UsuarioResponseDto
+        {
+            Id = u.Id ?? string.Empty,
+            Nome = u.Nome,
+            Email = u.Email,
+            Perfil = u.Perfil
+        });
+    }
+
+    public async Task<bool> PromoverAsync(string id)
+    {
+        var usuario = await _repository.ObterPorIdAsync(id);
+        if (usuario is null)
+        {
+            return false;
+        }
+        if (usuario.Perfil == PerfilUsuario.Admin)
+        {
+            return true;
+        }
+        return await _repository.AtualizarPerfilAsync(id, PerfilUsuario.Admin);
+    }
+
+    public async Task<bool> RebaixarAsync(string id)
+    {
+        var usuario = await _repository.ObterPorIdAsync(id);
+        if (usuario is null)
+        {
+            return false;
+        }
+        if (usuario.Perfil == PerfilUsuario.Usuario)
+        {
+            return true;
+        }
+        return await _repository.AtualizarPerfilAsync(id, PerfilUsuario.Usuario);
     }
 
     public async Task<LoginResponseDto> LoginAsync(LoginDto dto)

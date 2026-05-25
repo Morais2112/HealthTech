@@ -39,7 +39,7 @@ const medicosView = {
                   <td>${escapeHtml(m.email)}</td>
                   <td class="actions">
                     <a href="#/medicos/${m.id}/editar" class="btn btn-secondary btn-small">Editar</a>
-                    <button class="btn btn-danger btn-small" data-remove="${m.id}" data-nome="${escapeAttr(m.nome)}">Excluir</button>
+                    ${auth.ehAdmin() ? `<button class="btn btn-danger btn-small" data-remove="${m.id}" data-nome="${escapeAttr(m.nome)}">Excluir</button>` : ""}
                   </td>
                 </tr>
               `).join("")}
