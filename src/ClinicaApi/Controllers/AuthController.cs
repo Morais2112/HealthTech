@@ -11,11 +11,13 @@ namespace ClinicaApi.Controllers;
 [Produces("application/json")]
 public class AuthController : ControllerBase
 {
-    private readonly IAuthService _service;
+    private readonly IAuthService _authService;
+    private readonly IUsuarioService _usuarioService;
 
-    public AuthController(IAuthService service)
+    public AuthController(IAuthService authService, IUsuarioService usuarioService)
     {
-        _service = service;
+        _authService = authService;
+        _usuarioService = usuarioService;
     }
 
     /// <summary>Registra um novo usuario. O primeiro usuario do sistema vira Admin automaticamente.</summary>
@@ -27,7 +29,7 @@ public class AuthController : ControllerBase
     {
         try
         {
-            var criado = await _service.RegistrarAsync(dto);
+            var criado = await _authService.RegistrarAsync(dto);
             return StatusCode(StatusCodes.Status201Created, criado);
         }
         catch (InvalidOperationException ex)
@@ -45,7 +47,7 @@ public class AuthController : ControllerBase
     {
         try
         {
-            var resultado = await _service.LoginAsync(dto);
+            var resultado = await _authService.LoginAsync(dto);
             return Ok(resultado);
         }
         catch (InvalidOperationException ex)
@@ -62,7 +64,7 @@ public class AuthController : ControllerBase
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
     public async Task<ActionResult<IEnumerable<UsuarioResponseDto>>> ListarUsuarios()
     {
-        var usuarios = await _service.ListarUsuariosAsync();
+        var usuarios = await _usuarioService.ListarAsync();
         return Ok(usuarios);
     }
 
@@ -75,7 +77,7 @@ public class AuthController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Promover(string id)
     {
-        var ok = await _service.PromoverAsync(id);
+        var ok = await _usuarioService.PromoverAsync(id);
         if (!ok)
         {
             return NotFound(new { mensagem = $"Usuario com Id '{id}' nao encontrado." });
@@ -92,7 +94,7 @@ public class AuthController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> Rebaixar(string id)
     {
-        var ok = await _service.RebaixarAsync(id);
+        var ok = await _usuarioService.RebaixarAsync(id);
         if (!ok)
         {
             return NotFound(new { mensagem = $"Usuario com Id '{id}' nao encontrado." });

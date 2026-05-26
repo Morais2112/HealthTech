@@ -11,11 +11,12 @@ public class AuthServiceTests
 {
     private readonly Mock<IUsuarioRepository> _repoMock = new();
     private readonly Mock<ITokenService> _tokenMock = new();
+    private readonly Mock<IPasswordHasher> _hasherMock = new();
     private readonly AuthService _service;
 
     public AuthServiceTests()
     {
-        _service = new AuthService(_repoMock.Object, _tokenMock.Object);
+        _service = new AuthService(_repoMock.Object, _tokenMock.Object, _hasherMock.Object);
     }
 
     [Fact]
@@ -25,6 +26,7 @@ public class AuthServiceTests
 
         _repoMock.Setup(r => r.ObterPorEmailAsync(dto.Email)).ReturnsAsync((Usuario?)null);
         _repoMock.Setup(r => r.ContarAsync()).ReturnsAsync(0);
+        _hasherMock.Setup(h => h.Hash(dto.Senha)).Returns("hash-fake");
         _repoMock.Setup(r => r.CriarAsync(It.IsAny<Usuario>()))
                  .Callback<Usuario>(u => u.Id = "1")
                  .Returns(Task.CompletedTask);
@@ -32,7 +34,8 @@ public class AuthServiceTests
         var resultado = await _service.RegistrarAsync(dto);
 
         Assert.Equal(PerfilUsuario.Admin, resultado.Perfil);
-        _repoMock.Verify(r => r.CriarAsync(It.Is<Usuario>(u => u.Perfil == PerfilUsuario.Admin)), Times.Once);
+        _repoMock.Verify(r => r.CriarAsync(It.Is<Usuario>(u =>
+            u.Perfil == PerfilUsuario.Admin && u.SenhaHash == "hash-fake")), Times.Once);
     }
 
     [Fact]
@@ -42,6 +45,7 @@ public class AuthServiceTests
 
         _repoMock.Setup(r => r.ObterPorEmailAsync(dto.Email)).ReturnsAsync((Usuario?)null);
         _repoMock.Setup(r => r.ContarAsync()).ReturnsAsync(3);
+        _hasherMock.Setup(h => h.Hash(dto.Senha)).Returns("hash-fake");
         _repoMock.Setup(r => r.CriarAsync(It.IsAny<Usuario>()))
                  .Callback<Usuario>(u => u.Id = "x")
                  .Returns(Task.CompletedTask);
@@ -54,22 +58,21 @@ public class AuthServiceTests
     [Fact]
     public async Task LoginAsync_QuandoCredenciaisValidas_DeveRetornarToken()
     {
-        var senha = "minhaSenha123";
-        var hash = BCrypt.Net.BCrypt.HashPassword(senha);
         var usuario = new Usuario
         {
             Id = "uid-1",
             Nome = "Fulano",
             Email = "fulano@teste.com",
-            SenhaHash = hash,
+            SenhaHash = "hash-armazenado",
             Perfil = PerfilUsuario.Admin
         };
 
         _repoMock.Setup(r => r.ObterPorEmailAsync(usuario.Email)).ReturnsAsync(usuario);
+        _hasherMock.Setup(h => h.Verificar("minhaSenha", "hash-armazenado")).Returns(true);
         var expira = DateTime.UtcNow.AddHours(2);
         _tokenMock.Setup(t => t.Gerar(usuario)).Returns(("token-falso", expira));
 
-        var resultado = await _service.LoginAsync(new LoginDto { Email = usuario.Email, Senha = senha });
+        var resultado = await _service.LoginAsync(new LoginDto { Email = usuario.Email, Senha = "minhaSenha" });
 
         Assert.Equal("token-falso", resultado.Token);
         Assert.Equal(expira, resultado.ExpiraEm);
@@ -91,43 +94,19 @@ public class AuthServiceTests
     [Fact]
     public async Task LoginAsync_QuandoSenhaIncorreta_DeveLancarInvalidOperation()
     {
-        var hash = BCrypt.Net.BCrypt.HashPassword("senhaCerta");
         var usuario = new Usuario
         {
             Id = "uid-2",
             Email = "user@teste.com",
-            SenhaHash = hash,
+            SenhaHash = "hash-armazenado",
             Perfil = PerfilUsuario.Usuario
         };
         _repoMock.Setup(r => r.ObterPorEmailAsync(usuario.Email)).ReturnsAsync(usuario);
+        _hasherMock.Setup(h => h.Verificar(It.IsAny<string>(), It.IsAny<string>())).Returns(false);
 
         await Assert.ThrowsAsync<InvalidOperationException>(() =>
             _service.LoginAsync(new LoginDto { Email = usuario.Email, Senha = "senhaErrada" }));
 
         _tokenMock.Verify(t => t.Gerar(It.IsAny<Usuario>()), Times.Never);
-    }
-
-    [Fact]
-    public async Task PromoverAsync_QuandoUsuarioExisteEEhComum_DeveAtualizarParaAdmin()
-    {
-        var usuario = new Usuario { Id = "u1", Perfil = PerfilUsuario.Usuario };
-        _repoMock.Setup(r => r.ObterPorIdAsync("u1")).ReturnsAsync(usuario);
-        _repoMock.Setup(r => r.AtualizarPerfilAsync("u1", PerfilUsuario.Admin)).ReturnsAsync(true);
-
-        var resultado = await _service.PromoverAsync("u1");
-
-        Assert.True(resultado);
-        _repoMock.Verify(r => r.AtualizarPerfilAsync("u1", PerfilUsuario.Admin), Times.Once);
-    }
-
-    [Fact]
-    public async Task PromoverAsync_QuandoUsuarioNaoExiste_DeveRetornarFalse()
-    {
-        _repoMock.Setup(r => r.ObterPorIdAsync("inexistente")).ReturnsAsync((Usuario?)null);
-
-        var resultado = await _service.PromoverAsync("inexistente");
-
-        Assert.False(resultado);
-        _repoMock.Verify(r => r.AtualizarPerfilAsync(It.IsAny<string>(), It.IsAny<string>()), Times.Never);
     }
 }

@@ -76,7 +76,9 @@ builder.Services.AddScoped<IConsultaService, ConsultaService>();
 
 builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddSingleton<ITokenService, TokenService>();
+builder.Services.AddSingleton<IPasswordHasher, BcryptPasswordHasher>();
 
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

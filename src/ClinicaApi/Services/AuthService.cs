@@ -8,11 +8,16 @@ public class AuthService : IAuthService
 {
     private readonly IUsuarioRepository _repository;
     private readonly ITokenService _tokenService;
+    private readonly IPasswordHasher _passwordHasher;
 
-    public AuthService(IUsuarioRepository repository, ITokenService tokenService)
+    public AuthService(
+        IUsuarioRepository repository,
+        ITokenService tokenService,
+        IPasswordHasher passwordHasher)
     {
         _repository = repository;
         _tokenService = tokenService;
+        _passwordHasher = passwordHasher;
     }
 
     public async Task<UsuarioResponseDto> RegistrarAsync(RegistroDto dto)
@@ -30,7 +35,7 @@ public class AuthService : IAuthService
         {
             Nome = dto.Nome.Trim(),
             Email = dto.Email.Trim().ToLowerInvariant(),
-            SenhaHash = BCrypt.Net.BCrypt.HashPassword(dto.Senha),
+            SenhaHash = _passwordHasher.Hash(dto.Senha),
             Perfil = perfil,
             CriadoEm = DateTime.UtcNow
         };
@@ -46,50 +51,10 @@ public class AuthService : IAuthService
         };
     }
 
-    public async Task<IEnumerable<UsuarioResponseDto>> ListarUsuariosAsync()
-    {
-        var usuarios = await _repository.ListarAsync();
-        return usuarios.Select(u => new UsuarioResponseDto
-        {
-            Id = u.Id ?? string.Empty,
-            Nome = u.Nome,
-            Email = u.Email,
-            Perfil = u.Perfil
-        });
-    }
-
-    public async Task<bool> PromoverAsync(string id)
-    {
-        var usuario = await _repository.ObterPorIdAsync(id);
-        if (usuario is null)
-        {
-            return false;
-        }
-        if (usuario.Perfil == PerfilUsuario.Admin)
-        {
-            return true;
-        }
-        return await _repository.AtualizarPerfilAsync(id, PerfilUsuario.Admin);
-    }
-
-    public async Task<bool> RebaixarAsync(string id)
-    {
-        var usuario = await _repository.ObterPorIdAsync(id);
-        if (usuario is null)
-        {
-            return false;
-        }
-        if (usuario.Perfil == PerfilUsuario.Usuario)
-        {
-            return true;
-        }
-        return await _repository.AtualizarPerfilAsync(id, PerfilUsuario.Usuario);
-    }
-
     public async Task<LoginResponseDto> LoginAsync(LoginDto dto)
     {
         var usuario = await _repository.ObterPorEmailAsync(dto.Email);
-        if (usuario is null || !BCrypt.Net.BCrypt.Verify(dto.Senha, usuario.SenhaHash))
+        if (usuario is null || !_passwordHasher.Verificar(dto.Senha, usuario.SenhaHash))
         {
             throw new InvalidOperationException("Email ou senha invalidos.");
         }
